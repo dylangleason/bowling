@@ -4,7 +4,7 @@ build:
 	docker build -t 'dylangleason:bowling' .
 
 run:
-	docker run --rm -it 'dylangleason:bowling' python3 bowling.py
+	docker run --rm -it 'dylangleason:bowling'
 
 test:
 	docker run --rm 'dylangleason:bowling' python3 -m unittest -v
