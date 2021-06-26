@@ -1,22 +1,19 @@
 import re
 
 
-def _is_valid_frame(frame: str) -> bool:
-    return frame == 'x' or re.match(r'^\d,(\d|\/)$', frame)
-
-
 class BowlingScore:
     """BowlingScore calculates a running total of bowling score after each
     frame is logged via the `complete_frame` method.
 
     """
     MAX_PINS = 10
-    STRIKE_OR_SPARE = 10
+    BONUS = 10
 
     def __init__(self, max_frames: int = 10):
         self.strikes = []
         self.total_score = 0
         self.current_frame = 0
+        self.spare = 0
         self.max_frames = max_frames
 
     def _accum_strikes(self, lhs: int, rhs: int, acc: int) -> int:
@@ -28,16 +25,25 @@ class BowlingScore:
         return self._accum_strikes(new_lhs, lhs, frame_score + acc)
 
     def _accum_score(self, score: int, lhs: int, rhs: int) -> None:
-        if self.strikes:
+        if self.spare:
+            self.total_score += score + lhs + self.spare
+            self.spare = 0
+        elif self.strikes:
             self.total_score += self._accum_strikes(lhs, rhs, score)
         else:
             self.total_score += score
 
     def _handle_strike(self) -> None:
-        self.strikes.append(self.STRIKE_OR_SPARE)
-        self.current_frame += 1
+        if self.spare:
+            self._accum_score(0, self.BONUS, 0)
+        self.strikes.append(self.BONUS)
 
-    def _handle_frame(self, frame: str) -> None:
+    def _handle_spare(self) -> None:
+        self.spare = self.BONUS
+        if self.strikes:
+            self._accum_score(0, self.spare, 0)
+
+    def _handle_open_frame(self, frame: str) -> None:
         lhs, rhs = frame.split(',')
         lhs, rhs = int(lhs), int(rhs)
         score = lhs + rhs
@@ -46,7 +52,6 @@ class BowlingScore:
             raise ValueError("Frame score must not exceed 10 pins")
 
         self._accum_score(score, lhs, rhs)
-        self.current_frame += 1
 
     def complete_frame(self, frame: str) -> None:
         """Given a frame string matching the format "X", "n,/" or "n,m",
@@ -59,9 +64,17 @@ class BowlingScore:
 
         if frame == 'x':
             self._handle_strike()
+        elif '/' in frame:
+            self._handle_spare()
         else:
-            self._handle_frame(frame)
+            self._handle_open_frame(frame)
 
+        self.current_frame += 1
+
+
+def _is_valid_frame(frame: str) -> bool:
+    return frame == 'x' or re.match(r'^\d,(\d|\/)$', frame)
+        
 
 def _print_invalid_frame(message: str):
     print(f"ERROR: {message}. Please try again.\n")
