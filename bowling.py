@@ -6,8 +6,10 @@ class BowlingScore:
     frame is completed via the `complete_frame` method.
 
     """
-    MAX_PINS = 10
     BONUS = 10
+    MAX_PINS = 10
+    STRIKE = 1
+    TRIPLE = 5
 
     def __init__(self, max_frames: int = 10):
         self.strikes = []
@@ -51,27 +53,44 @@ class BowlingScore:
 
         self._accum_score(score, roll1, roll2)
 
-    def complete_frame(self, frame: str) -> None:
-        """Given a frame string matching the format "X", "n,/" or "n,m",
-        complete the frame by accumulating the score and advancing to
-        the next frame.
-        """
-        frame = frame.lower()
-        if not _is_valid_frame(frame):
-            raise ValueError("Frame must match format: 'X', 'n,/' or 'n,m'")
+    def _handle_final_frame(self, frame: str) -> None:
+        r1, r2, r3 = frame.split(',')
+        if r1 == 'x':
+            self.total_score += self.BONUS + int(r2) + int(r3)
+        else:
+            self.total_score += self.BONUS + int(r3)
 
-        if frame == 'x':
-            self._handle_strike()
-        elif '/' in frame:
+    def _handle_double(self, frame: str) -> None:
+        if '/' in frame:
             self._handle_spare()
         else:
             self._handle_open_frame(frame)
 
+    def _validate_frame(self, frame: str) -> None:
+        frame_pattern = re.match(r'^x|(\d,(\d|\/))$', frame)
+        final_frame_pattern = re.match(r'^((x,\d)|(\d,\/)),\d$', frame)
+        if not(frame_pattern or final_frame_pattern):
+            raise ValueError("Invalid frame format")
+        if self.current_frame < self.max_frames and final_frame_pattern:
+            raise ValueError("Three rolls are only allowed in the final Frame")
+
+    def complete_frame(self, frame: str) -> None:
+        """Given a frame string with a valid frame format, complete the frame
+        by accumulating the score and advancing to the next frame.
+
+        """
+        frame = frame.lower()
+        self._validate_frame(frame)
+
+        num_rolls = len(frame)
+        if num_rolls == self.STRIKE:
+            self._handle_strike()
+        elif num_rolls == self.TRIPLE:
+            self._handle_final_frame(frame)
+        else:
+            self._handle_double(frame)
+
         self.current_frame += 1
-
-
-def _is_valid_frame(frame: str) -> bool:
-    return frame == 'x' or re.match(r'^\d,(\d|\/)$', frame)
         
 
 def _print_invalid_frame(message: str):

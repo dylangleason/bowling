@@ -57,3 +57,24 @@ class TestBowling(TestCase):
         self.scoreboard.complete_frame('7,/')
         self.scoreboard.complete_frame('7,2')
         self.assertEqual(self.scoreboard.total_score, 46)
+
+    def test_complete_frame__raises_error_for_invalid_frame(self):
+        self.assertRaises(ValueError, self.scoreboard.complete_frame, 'foo')
+
+    def test_complete_frame__final_frame__raises_error_when_not_last_frame(self):
+        self.assertRaises(ValueError, self.scoreboard.complete_frame, 'X,1,2')
+
+    def test_complete_frame__final_frame__with_strike__updates_score(self):
+        self.scoreboard.current_frame = 10
+        self.scoreboard.complete_frame('X,5,5')
+        self.assertEqual(self.scoreboard.total_score, 20)
+
+    def test_complete_frame__final_frame__with_spare__updates_score(self):
+        self.scoreboard.current_frame = 10
+        self.scoreboard.complete_frame('2,/,3')
+        self.assertEqual(self.scoreboard.total_score, 13)
+
+    def test_complete_frame__final_frame__with_open_frame__updates_score(self):
+        self.scoreboard.current_frame = 10
+        self.scoreboard.complete_frame('2,5')
+        self.assertEqual(self.scoreboard.total_score, 7)

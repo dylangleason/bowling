@@ -9,5 +9,8 @@ run:
 test:
 	docker run --rm 'dylangleason:bowling' python3 -m unittest -v
 
+venv:
+	python -m venv $(WORKON_HOME)/bowling
+
 clean:
 	docker image rm 'dylangleason:bowling'
