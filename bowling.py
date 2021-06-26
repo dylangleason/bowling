@@ -2,8 +2,8 @@ import re
 
 
 class BowlingScore:
-    """BowlingScore calculates a running total of bowling score after each
-    frame is logged via the `complete_frame` method.
+    """BowlingScore calculates a running total bowling score after each
+    frame is completed via the `complete_frame` method.
 
     """
     MAX_PINS = 10
@@ -16,26 +16,24 @@ class BowlingScore:
         self.spare = 0
         self.max_frames = max_frames
 
-    def _accum_strikes(self, lhs: int, rhs: int, acc: int) -> int:
-        new_sum = lhs + rhs
+    def _accum_strikes(self, roll1: int, roll2: int, acc: int) -> int:
+        new_sum = roll1 + roll2
         if not self.strikes:
             return acc
-        new_lhs = self.strikes.pop()
-        frame_score = new_sum + new_lhs
-        return self._accum_strikes(new_lhs, lhs, frame_score + acc)
+        new_roll1 = self.strikes.pop()
+        frame_score = new_sum + new_roll1
+        return self._accum_strikes(new_roll1, roll1, frame_score + acc)
 
-    def _accum_score(self, score: int, lhs: int, rhs: int) -> None:
+    def _accum_score(self, score: int, roll1: int, roll2: int) -> None:
         if self.spare:
-            self.total_score += score + lhs + self.spare
+            self.total_score += score + roll1 + self.spare
             self.spare = 0
-        elif self.strikes:
-            self.total_score += self._accum_strikes(lhs, rhs, score)
         else:
-            self.total_score += score
+            self.total_score += self._accum_strikes(roll1, roll2, score)
 
     def _handle_strike(self) -> None:
         if self.spare:
-            self._accum_score(0, self.BONUS, 0)
+            self._accum_score(self.BONUS, 0, 0)
         self.strikes.append(self.BONUS)
 
     def _handle_spare(self) -> None:
@@ -44,14 +42,14 @@ class BowlingScore:
         self.spare = self.BONUS
 
     def _handle_open_frame(self, frame: str) -> None:
-        lhs, rhs = frame.split(',')
-        lhs, rhs = int(lhs), int(rhs)
-        score = lhs + rhs
+        roll1, roll2 = frame.split(',')
+        roll1, roll2 = int(roll1), int(roll2)
+        score = roll1 + roll2
 
         if score > self.MAX_PINS:
             raise ValueError("Frame score must not exceed 10 pins")
 
-        self._accum_score(score, lhs, rhs)
+        self._accum_score(score, roll1, roll2)
 
     def complete_frame(self, frame: str) -> None:
         """Given a frame string matching the format "X", "n,/" or "n,m",
