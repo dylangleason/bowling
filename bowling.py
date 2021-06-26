@@ -39,9 +39,9 @@ class BowlingScore:
         self.strikes.append(self.BONUS)
 
     def _handle_spare(self) -> None:
-        self.spare = self.BONUS
         if self.strikes:
-            self._accum_score(0, self.spare, 0)
+            self._accum_score(self.BONUS, 0, 0)
+        self.spare = self.BONUS
 
     def _handle_open_frame(self, frame: str) -> None:
         lhs, rhs = frame.split(',')

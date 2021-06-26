@@ -55,4 +55,5 @@ class TestBowling(TestCase):
     def test_complete_frame__strike_followed_by_spare__updates_score(self):
         self.scoreboard.complete_frame('X')
         self.scoreboard.complete_frame('7,/')
-        self.assertEqual(self.scoreboard.total_score, 20)
+        self.scoreboard.complete_frame('7,2')
+        self.assertEqual(self.scoreboard.total_score, 46)
