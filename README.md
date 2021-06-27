@@ -2,8 +2,7 @@
 
 Program for calculating 10-pin bowling scores.
 
-Score each frame at the interactive prompt, for up to 10 frames. A
-valid frame is defined as one of the following inputs:
+Score each frame at the interactive prompt, for up to 10 frames. A valid frame is defined as one of the following inputs:
 
     X     - Strike ("x" is also accepted as input)
     n,/   - Spare
@@ -11,17 +10,16 @@ valid frame is defined as one of the following inputs:
     X,n,m - Strike plus two bonus rolls (Final Frame only)
     n,/,m - Spare plus two bonus rolls (Final Frame only
 
-
 ## Running the Program
 
-This program can be run via Python 3 directly if installed on your system, or can be run via Docker using the `Dockerfile`.
+The program can be run via Python 3, or via Docker after building an image with the supplied `Dockerfile`.
 
 ### Python
 
-The program can be run via Python thusly:
+To run the program via Python 3:
 
 ```
-python3 bowling.py
+python3 main.py
 ```
 
 ### Docker
@@ -32,7 +30,7 @@ Docker commands have been wrapped via `make`. To build the Docker image and exec
 make
 ```
 
-The program can be run again without building the image:
+The program can be run again without rebuilding the image:
 
 ```
 make run
