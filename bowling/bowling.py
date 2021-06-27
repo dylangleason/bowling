@@ -18,7 +18,7 @@ class BowlingScore:
         self.strikes: List[int] = []
         self.total_score: int = 0
         self.current_frame: int = 0
-        self.spare: int = 0
+        self.is_spare: bool = False
         self.max_frames: int = max_frames
 
     def complete_frame(self, frame: str) -> None:
@@ -59,21 +59,21 @@ class BowlingScore:
         return self._accum_strikes(new_r1, r1, frame_score + acc)
 
     def _accum_score(self, score: int, r1: int, r2: int) -> None:
-        if self.spare:
-            self.total_score += score + r1 + self.spare
-            self.spare = 0
+        if self.is_spare:
+            self.total_score += score + r1 + self.BONUS
+            self.is_spare = False
         else:
             self.total_score += self._accum_strikes(r1, r2, score)
 
     def _handle_strike(self) -> None:
-        if self.spare:
+        if self.is_spare:
             self._accum_score(self.BONUS, 0, 0)
         self.strikes.append(self.BONUS)
 
     def _handle_spare(self) -> None:
         if self.strikes:
             self._accum_score(self.BONUS, 0, 0)
-        self.spare = self.BONUS
+        self.is_spare = self.BONUS
 
     def _handle_open_frame(self, frame: str) -> None:
         r1, r2 = frame.split(',')
