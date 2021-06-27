@@ -119,8 +119,3 @@ class TestBowling(TestCase):
         self.scoreboard.complete_frame('X')
         self.scoreboard.complete_frame('X,5,2')
         self.assertEqual(self.scoreboard.total_score, 42)
-
-    def test_complete_frame__final_frame__with_strike_and_spare__updates_score(self):
-        # TODO: unclear on how to handle this behavior after trying to
-        # find how the scoring rule is defined for bowling.
-        self.assertFalse(True)
