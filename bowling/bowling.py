@@ -34,8 +34,6 @@ class BowlingScore:
            "X,n,m" - Strike plus two bonus rolls (Final Frame only)
            "n,/,m" - Spare plus one bonus rolls (Final Frame only)
 
-        Note that "X,n,/" is undefined in this implementation.
-
         """
         frame = frame.lower()
         self._validate_frame(frame)
@@ -86,6 +84,8 @@ class BowlingScore:
         self._accum_score(score, r1, r2)
 
     def _handle_final_frame(self, frame: str) -> None:
+        # NOTE: not sure how to calculate / handle multiple strikes in
+        # the last frame, or a strike followed by a spare
         r1, r2, r3 = frame.split(',')
         if r1 == self.STRIKE:
             self._accum_score(self.BONUS + int(r2) + int(r3), self.BONUS, int(r2))
