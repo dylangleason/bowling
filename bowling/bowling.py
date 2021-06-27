@@ -22,8 +22,19 @@ class BowlingScore:
         self.max_frames: int = max_frames
 
     def complete_frame(self, frame: str) -> None:
-        """Given a frame string with a valid frame format, complete the frame
-        by accumulating the score and advancing to the next frame.
+        """Given a `frame` string with a valid frame format, complete the
+        frame by accumulating the score and advancing to the next
+        frame.
+
+        Valid frame formats are:
+
+           "X"     - Strike ("x" is also accepted as input)
+           "n,/"   - Spare
+           "n,m"   - Open Frame, where n and m are numbers
+           "X,n,m" - Strike plus two bonus rolls (Final Frame only)
+           "n,/,m" - Spare plus two bonus rolls (Final Frame only
+
+        Note that "X,n,/" is undefined in this implementation.
 
         """
         frame = frame.lower()
