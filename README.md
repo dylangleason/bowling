@@ -8,7 +8,7 @@ Score each frame at the interactive prompt, for up to 10 frames. A valid frame i
     n,/   - Spare
     n,m   - Open Frame, where n and m are numbers
     X,n,m - Strike plus two bonus rolls (Final Frame only)
-    n,/,m - Spare plus two bonus rolls (Final Frame only
+    n,/,m - Spare plus one bonus rolls (Final Frame only)
 
 ## Running the Program
 
