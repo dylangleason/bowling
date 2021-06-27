@@ -6,6 +6,9 @@ def _print_invalid_frame(message: str):
 
 
 def _print_current_score(scoreboard: BowlingScore):
+    next_frame = scoreboard.current_frame+1
+    if next_frame > 10:
+        return
     print(f"Next Frame: {scoreboard.current_frame+1}, Total: {scoreboard.total_score}\n")
 
 
