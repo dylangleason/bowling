@@ -1,3 +1,5 @@
+WORKON_HOME ?= venv
+
 default: build run
 
 build:
