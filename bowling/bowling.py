@@ -103,5 +103,5 @@ class BowlingScore:
         final_frame_pattern = re.match(r'^((x,\d)|(\d,\/)),\d$', frame)
         if not(frame_pattern or final_frame_pattern):
             raise ValueError("Invalid frame format")
-        if self.current_frame < self.max_frames and final_frame_pattern:
+        if self.current_frame < self.max_frames-1 and final_frame_pattern:
             raise ValueError("Three rolls are only allowed in the final Frame")

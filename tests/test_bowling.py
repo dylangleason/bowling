@@ -65,24 +65,24 @@ class TestBowling(TestCase):
         self.assertRaises(ValueError, self.scoreboard.complete_frame, 'X,1,2')
 
     def test_complete_frame__final_frame__with_strike__updates_score(self):
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,5,5')
         self.assertEqual(self.scoreboard.total_score, 20)
 
     def test_complete_frame__final_frame__with_spare__updates_score(self):
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('2,/,3')
         self.assertEqual(self.scoreboard.total_score, 13)
 
     def test_complete_frame__final_frame__with_open_frame__updates_score(self):
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('2,5')
         self.assertEqual(self.scoreboard.total_score, 7)
 
     def test_complete_frame__spare_followed_by_final_frame_with_spare__updates_score(
             self
     ):
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('6,/')
         self.scoreboard.complete_frame('7,/,3')
         self.assertEqual(self.scoreboard.total_score, 30)
@@ -93,7 +93,7 @@ class TestBowling(TestCase):
         # x = 10
         # 7,/,3 = 13, x' = 17
         # 17 + 13 + 10 = 40
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X')
         self.scoreboard.complete_frame('7,/,3')
         self.assertEqual(self.scoreboard.total_score, 40)
@@ -104,7 +104,7 @@ class TestBowling(TestCase):
         # 6,/ = 10
         # X,5,2 = 10 + 5 + 2, x' = 20
         # 20 + 10 + 5 + 2 = 37
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('6,/')
         self.scoreboard.complete_frame('X,5,2')
         self.assertEqual(self.scoreboard.total_score, 37)
@@ -115,7 +115,7 @@ class TestBowling(TestCase):
         # X = 10
         # X,5,2 = 10 + 5 + 2, x' = 25
         # 25 + 10 + 5 + 2 = 37
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X')
         self.scoreboard.complete_frame('X,5,2')
         self.assertEqual(self.scoreboard.total_score, 42)
