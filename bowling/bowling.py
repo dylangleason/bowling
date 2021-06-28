@@ -71,7 +71,7 @@ class BowlingScore:
     def _handle_spare(self) -> None:
         if self.strikes:
             self._accum_score(self.BONUS, 0, 0)
-        self.is_spare = self.BONUS
+        self.is_spare = True
 
     def _handle_open_frame(self, frame: str) -> None:
         r1, r2 = frame.split(',')
