@@ -2,6 +2,9 @@ import re
 from typing import List
 
 
+def _is_final_frame(frame: str) -> bool:
+    return len(frame) == 5
+
 class BowlingScore:
     """BowlingScore calculates a running total bowling score after each
     frame is completed via the `complete_frame` method.
@@ -9,8 +12,6 @@ class BowlingScore:
     """
     BONUS = 10
     MAX_PINS = 10
-    SINGLE = 1
-    TRIPLE = 5
     STRIKE = 'x'
     SPARE = '/'
 
@@ -38,13 +39,14 @@ class BowlingScore:
         frame = frame.lower()
         self._validate_frame(frame)
 
-        num_rolls = len(frame)
-        if num_rolls == self.SINGLE:
-            self._handle_strike()
-        elif num_rolls == self.TRIPLE:
-            self._handle_final_frame(frame)
-        else:
-            self._handle_double(frame)
+        points = self._handle_frame(frame)
+        if len(points) > 1:
+            r1 = points[0]
+            r2 = points[1]
+            self._accum_score(r1+r2, r1, r2)
+        elif points and _is_final_frame(frame):
+            r = points[0]
+            self._accum_score(r, 0, 0)
 
         self.current_frame += 1
 
@@ -63,6 +65,18 @@ class BowlingScore:
         else:
             self.total_score += self._accum_strikes(r1, r2, score)
 
+    def _handle_frame(self, frame: str) -> List[int]:
+        points = []
+        for roll in frame.split(","):
+            if roll == self.STRIKE:
+                self._handle_strike()
+            elif roll == self.SPARE:
+                points = []
+                self._handle_spare()
+            else:
+                points.append(int(roll))
+        return points
+
     def _handle_strike(self) -> None:
         if self.is_spare:
             self._accum_score(self.BONUS, 0, 0)
@@ -72,31 +86,6 @@ class BowlingScore:
         if self.strikes:
             self._accum_score(self.BONUS, 0, 0)
         self.is_spare = True
-
-    def _handle_open_frame(self, frame: str) -> None:
-        r1, r2 = frame.split(',')
-        r1, r2 = int(r1), int(r2)
-        score = r1 + r2
-
-        if score > self.MAX_PINS:
-            raise ValueError("Frame score must not exceed 10 pins")
-
-        self._accum_score(score, r1, r2)
-
-    def _handle_final_frame(self, frame: str) -> None:
-        # NOTE: not sure how to calculate / handle multiple strikes in
-        # the last frame, or a strike followed by a spare
-        r1, r2, r3 = frame.split(',')
-        if r1 == self.STRIKE:
-            self._accum_score(self.BONUS + int(r2) + int(r3), self.BONUS, int(r2))
-        else:
-            self._accum_score(self.BONUS + int(r3), int(r1), self.BONUS)
-
-    def _handle_double(self, frame: str) -> None:
-        if self.SPARE in frame:
-            self._handle_spare()
-        else:
-            self._handle_open_frame(frame)
 
     def _validate_frame(self, frame: str) -> None:
         frame_pattern = re.match(r'^x|(\d,(\d|\/))$', frame)
