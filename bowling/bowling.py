@@ -11,6 +11,7 @@ class BowlingScore:
     MAX_PINS = 10
     STRIKE = 'x'
     SPARE = '/'
+    FINAL_FRAME = 5
 
     def __init__(self, max_frames: int = 10):
         self.strikes: List[int] = []
@@ -90,9 +91,7 @@ class BowlingScore:
         self.is_spare = True
 
     def _validate_frame(self, frame: str) -> None:
-        frame_pattern = re.match(r'^x|(\d,(\d|\/))$', frame)
-        final_frame_pattern = re.match(r'^((x,\d)|(\d,\/)),\d$', frame)
-        if not(frame_pattern or final_frame_pattern):
+        if not re.match(r'^(((x|\d),?)+\/?)(,\d)?$', frame):
             raise ValueError("Invalid frame format")
-        if self.current_frame < self.max_frames-1 and final_frame_pattern:
+        if self.current_frame < self.max_frames-1 and len(frame) >= self.FINAL_FRAME:
             raise ValueError("Three rolls are only allowed in the final Frame")
