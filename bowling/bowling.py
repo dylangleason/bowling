@@ -2,9 +2,6 @@ import re
 from typing import List
 
 
-def _is_final_frame(frame: str) -> bool:
-    return len(frame) == 5
-
 class BowlingScore:
     """BowlingScore calculates a running total bowling score after each
     frame is completed via the `complete_frame` method.
