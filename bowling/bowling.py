@@ -27,11 +27,18 @@ class BowlingScore:
 
         Valid frame formats are:
 
-           "X"     - Strike ("x" is also accepted as input)
-           "n,/"   - Spare
-           "n,m"   - Open Frame, where n and m are numbers
-           "X,n,m" - Strike plus two bonus rolls (Final Frame only)
-           "n,/,m" - Spare plus one bonus rolls (Final Frame only)
+           X     - Strike ("x" is also accepted as input)
+           n,/   - Spare
+           n,m   - Open Frame, where n and m are numbers
+
+        For the final frame, valid frame formats are:
+
+           n,m   - Open frame, where n and m are numbers
+           X,n,m - Strike plus two bonus rolls
+           n,/,m - Spare plus one bonus rolls
+           X,X,n - Two strikes plus one bonus roll
+           X,X,X - Three strikes
+           X,n,/ - Strike plus two bonus rolls resulting in spare
 
         """
         frame = frame.lower()
