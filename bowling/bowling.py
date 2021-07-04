@@ -44,9 +44,6 @@ class BowlingScore:
             r1 = points[0]
             r2 = points[1]
             self._accum_score(r1+r2, r1, r2)
-        elif points and _is_final_frame(frame):
-            r = points[0]
-            self._accum_score(r, 0, 0)
 
         self.current_frame += 1
 
@@ -60,13 +57,17 @@ class BowlingScore:
 
     def _accum_score(self, score: int, r1: int, r2: int) -> None:
         if self.is_spare:
-            self.total_score += score + r1 + self.BONUS
-            self.is_spare = False
+            self._accum_spare(score+r1)
         else:
             self.total_score += self._accum_strikes(r1, r2, score)
 
+    def _accum_spare(self, roll: int) -> None:
+        self.total_score += roll + self.BONUS
+        self.is_spare = False
+
     def _handle_frame(self, frame: str) -> List[int]:
         points = []
+
         for roll in frame.split(","):
             if roll == self.STRIKE:
                 self._handle_strike()
@@ -74,7 +75,11 @@ class BowlingScore:
                 points = []
                 self._handle_spare()
             else:
-                points.append(int(roll))
+                r = int(roll)
+                if self.is_spare:
+                    self._accum_spare(r)
+                points.append(r)
+
         return points
 
     def _handle_strike(self) -> None:
