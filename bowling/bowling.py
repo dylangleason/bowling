@@ -50,6 +50,10 @@ class BowlingScore:
             r2 = points[1]
             self._accum_score(r1+r2, r1, r2)
 
+        if self._is_final_frame() and self.strikes:
+            roll = points[0] if points else 0
+            self._accum_score(roll, roll, 0)
+
         self.current_frame += 1
 
     def _accum_strikes(self, r1: int, r2: int, acc: int) -> int:
@@ -100,5 +104,8 @@ class BowlingScore:
     def _validate_frame(self, frame: str) -> None:
         if not re.match(r'^(((x|\d),?)+\/?)(,\d)?$', frame):
             raise ValueError("Invalid frame format")
-        if self.current_frame < self.max_frames-1 and len(frame) >= self.FINAL_FRAME:
+        if not self._is_final_frame() and len(frame) >= self.FINAL_FRAME:
             raise ValueError("Three rolls are only allowed in the final Frame")
+
+    def _is_final_frame(self) -> bool:
+        return self.current_frame == self.max_frames-1

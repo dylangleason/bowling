@@ -31,6 +31,17 @@ class TestBowling(TestCase):
         self.scoreboard.complete_frame('2,1')
         self.assertEqual(self.scoreboard.total_score, 16)
 
+    def test_complete_frame__strike_followed_by_open_frame__updates_score(self):
+        # x    -> 10
+        # x'   -> 10, x  -> 23
+        # 3,0  -> 3,  x' -> 13
+        #
+        # Total: 39
+        self.scoreboard.complete_frame('X')
+        self.scoreboard.complete_frame('X')
+        self.scoreboard.complete_frame('3,0')
+        self.assertEqual(self.scoreboard.total_score, 39)
+
     def test_complete_frame__strikes_consecutively__updates_score(self):
         self.scoreboard.complete_frame('X')
         self.scoreboard.complete_frame('X')
@@ -85,8 +96,9 @@ class TestBowling(TestCase):
         # 6,/ = 10
         # 7,/,3 = 13, 6,/' = 17
         # 10 + 17 + 3 = 30
-        self.scoreboard.current_frame = 9
+        self.scoreboard.current_frame = 8
         self.scoreboard.complete_frame('6,/')
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('7,/,3')
         self.assertEqual(self.scoreboard.total_score, 30)
 
@@ -97,8 +109,9 @@ class TestBowling(TestCase):
         # 7,/,3   ->  10 + 3 = 13
         #
         # Total: 33
-        self.scoreboard.current_frame = 9
+        self.scoreboard.current_frame = 8
         self.scoreboard.complete_frame('X')
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('7,/,3')
         #self.assertEqual(self.scoreboard.total_score, 40)
         self.assertEqual(self.scoreboard.total_score, 33)
@@ -111,8 +124,9 @@ class TestBowling(TestCase):
         # 5,2 = 7  ->       =  7
         #
         # Total: 44
-        self.scoreboard.current_frame = 10
+        self.scoreboard.current_frame = 8
         self.scoreboard.complete_frame('6,/')
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,5,2')
         self.assertEqual(self.scoreboard.total_score, 44)
 
@@ -124,12 +138,21 @@ class TestBowling(TestCase):
         # 5,2   = 7  ->          7
         #
         # Total: 49
-        self.scoreboard.current_frame = 9
+        self.scoreboard.current_frame = 8
         self.scoreboard.complete_frame('X')
+        self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,5,2')
         self.assertEqual(self.scoreboard.total_score, 49)
 
-    # def test_complete_frame__final_frame__with_strike_and_spare__updates_score(self):
-    #     # TODO: unclear on how to handle this behavior after trying to
-    #     # find how the scoring rule is defined for bowling.
-    #     self.assertFalse(True)
+    def test_complete_frame__final_frame__with_two_strikes_and_point__updates_score(self):
+        self.scoreboard.current_frame = 9
+        self.scoreboard.complete_frame('X,X,3')
+        self.assertEqual(self.scoreboard.total_score, 39)
+
+    def test_complete_frame__final_frame__with_three_strikes__updates_score(self):
+        self.scoreboard.current_frame = 9
+        self.scoreboard.complete_frame('X,X,X')
+        self.assertEqual(self.scoreboard.total_score, 60)
+
+    def test_complete_frame__final_frame__with_strike_and_spare__updates_score(self):
+        self.assertFalse(True)
