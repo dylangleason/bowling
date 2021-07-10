@@ -155,4 +155,6 @@ class TestBowling(TestCase):
         self.assertEqual(self.scoreboard.total_score, 60)
 
     def test_complete_frame__final_frame__with_strike_and_spare__updates_score(self):
-        self.assertFalse(True)
+        self.scoreboard.current_frame = 9
+        self.scoreboard.complete_frame('X,5,/')
+        self.assertEqual(self.scoreboard.total_score, 20)

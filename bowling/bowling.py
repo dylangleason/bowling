@@ -20,6 +20,10 @@ class BowlingScore:
         self.is_spare: bool = False
         self.max_frames: int = max_frames
 
+    @property
+    def _is_final_frame(self) -> bool:
+        return self.current_frame == self.max_frames-1
+
     def complete_frame(self, frame: str) -> None:
         """Given a `frame` string with a valid frame format, complete the
         frame by accumulating the score and advancing to the next
@@ -50,7 +54,7 @@ class BowlingScore:
             r2 = points[1]
             self._accum_score(r1+r2, r1, r2)
 
-        if self._is_final_frame() and self.strikes:
+        if self._is_final_frame and self.strikes:
             roll = points[0] if points else 0
             self._accum_score(roll, roll, 0)
 
@@ -75,7 +79,7 @@ class BowlingScore:
         self.is_spare = False
 
     def _handle_frame(self, frame: str) -> List[int]:
-        points = []
+        points: List[int] = []
 
         for roll in frame.split(","):
             if roll == self.STRIKE:
@@ -104,8 +108,5 @@ class BowlingScore:
     def _validate_frame(self, frame: str) -> None:
         if not re.match(r'^(((x|\d),?)+\/?)(,\d)?$', frame):
             raise ValueError("Invalid frame format")
-        if not self._is_final_frame() and len(frame) >= self.FINAL_FRAME:
+        if not self._is_final_frame and len(frame) >= self.FINAL_FRAME:
             raise ValueError("Three rolls are only allowed in the final Frame")
-
-    def _is_final_frame(self) -> bool:
-        return self.current_frame == self.max_frames-1
