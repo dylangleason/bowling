@@ -31,7 +31,7 @@ class TestBowling(TestCase):
         self.scoreboard.complete_frame('2,1')
         self.assertEqual(self.scoreboard.total_score, 16)
 
-    def test_complete_frame__strike_followed_by_open_frame__updates_score(self):
+    def test_complete_frame__two_strikes_followed_by_open_frame__updates_score(self):
         # x    -> 10
         # x'   -> 10, x  -> 23
         # 3,0  -> 3,  x' -> 13
