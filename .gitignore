@@ -5,4 +5,5 @@
 *bin/
 *lib/
 *lib64
+*.mypy_cache/
 *pyvenv.cfg
