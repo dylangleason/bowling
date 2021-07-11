@@ -78,7 +78,7 @@ class TestBowling(TestCase):
     def test_complete_frame__final_frame__with_strike__updates_score(self):
         self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,5,5')
-        self.assertEqual(self.scoreboard.total_score, 30)
+        self.assertEqual(self.scoreboard.total_score, 20)
 
     def test_complete_frame__final_frame__with_spare__updates_score(self):
         self.scoreboard.current_frame = 9
@@ -107,13 +107,11 @@ class TestBowling(TestCase):
     ):
         # X = 10  ->  7,/    = 20
         # 7,/,3   ->  10 + 3 = 13
-        #
         # Total: 33
         self.scoreboard.current_frame = 8
         self.scoreboard.complete_frame('X')
         self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('7,/,3')
-        #self.assertEqual(self.scoreboard.total_score, 40)
         self.assertEqual(self.scoreboard.total_score, 33)
 
     def test_complete_frame__spare_followed_by_final_frame_with_strike__updates_score(
@@ -121,38 +119,34 @@ class TestBowling(TestCase):
     ):
         # 6,/ = 10 -> 6,/,X = 20
         # X   = 10 -> X,5,2 = 17
-        # 5,2 = 7  ->       =  7
-        #
-        # Total: 44
+        # Total: 37
         self.scoreboard.current_frame = 8
         self.scoreboard.complete_frame('6,/')
         self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,5,2')
-        self.assertEqual(self.scoreboard.total_score, 44)
+        self.assertEqual(self.scoreboard.total_score, 37)
 
     def test_complete_frame__strike_followed_by_final_frame_with_strike__updates_score(
             self
     ):
         # X     = 10 -> X,X,5 = 25
         # X,5,2 = 10 -> X,5,2 = 17
-        # 5,2   = 7  ->          7
-        #
-        # Total: 49
+        # Total: 42
         self.scoreboard.current_frame = 8
         self.scoreboard.complete_frame('X')
         self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,5,2')
-        self.assertEqual(self.scoreboard.total_score, 49)
+        self.assertEqual(self.scoreboard.total_score, 42)
 
     def test_complete_frame__final_frame__with_two_strikes_and_point__updates_score(self):
         self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,X,3')
-        self.assertEqual(self.scoreboard.total_score, 39)
+        self.assertEqual(self.scoreboard.total_score, 23)
 
     def test_complete_frame__final_frame__with_three_strikes__updates_score(self):
         self.scoreboard.current_frame = 9
         self.scoreboard.complete_frame('X,X,X')
-        self.assertEqual(self.scoreboard.total_score, 60)
+        self.assertEqual(self.scoreboard.total_score, 30)
 
     def test_complete_frame__final_frame__with_strike_and_spare__updates_score(self):
         self.scoreboard.current_frame = 9

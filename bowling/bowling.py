@@ -14,7 +14,7 @@ class BowlingScore:
     FINAL_FRAME = 5
 
     def __init__(self, max_frames: int = 10):
-        self.strikes: List[int] = []
+        self.strikes: List[bool] = []
         self.total_score: int = 0
         self.current_frame: int = 0
         self.is_spare: bool = False
@@ -64,9 +64,9 @@ class BowlingScore:
         new_sum = r1 + r2
         if not self.strikes:
             return acc
-        new_r1 = self.strikes.pop()
-        frame_score = new_sum + new_r1
-        return self._accum_strikes(new_r1, r1, frame_score + acc)
+        is_final = self.strikes.pop()
+        frame_score = self.BONUS if is_final else new_sum + self.BONUS
+        return self._accum_strikes(self.BONUS, r1, frame_score + acc)
 
     def _accum_score(self, score: int, r1: int, r2: int) -> None:
         if self.is_spare:
@@ -98,7 +98,7 @@ class BowlingScore:
     def _handle_strike(self) -> None:
         if self.is_spare:
             self._accum_score(self.BONUS, 0, 0)
-        self.strikes.append(self.BONUS)
+        self.strikes.append(self._is_final_frame)
 
     def _handle_spare(self) -> None:
         if self.strikes:
